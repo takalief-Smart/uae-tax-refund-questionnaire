@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان استرداد الضريبة - تكاليف | الاستشارات الضريبية في الإمارات</title>
+    <!-- Bootstrap RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- SheetJS -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .main-header {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-bottom: 3px solid #52b788;
+        }
+        
+        .company-badge {
+            background: rgba(82, 183, 136, 0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            border: 1px solid #52b788;
+            color: white;
+        }
+        
+        .uae-badge {
+            background: linear-gradient(135deg, #00732f 0%, #c8102e 100%);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 2rem;
+            background-color: #f8faf8;
+            border: 1px solid #e4f2e4;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            border-bottom: 2px solid #52b788;
+        }
+        
+        .btn-custom {
+            background: #52b788;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            background: #2d6a4e;
+            transform: scale(1.05);
+            color: white;
+        }
+        
+        .btn-excel {
+            background: #1e4a3b;
+            color: white;
+            border: 2px solid #52b788;
+        }
+        
+        .btn-excel:hover {
+            background: #2d6a4e;
+            color: white;
+        }
+        
+        .btn-pdf {
+            background: #4a6b5a;
+            color: white;
+            border: 2px solid #52b788;
+        }
+        
+        .form-label {
+            color: #2d6a4e;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e4f2e4;
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #52b788;
+            box-shadow: 0 0 0 0.2rem rgba(82, 183, 136, 0.25);
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e4f2e4;
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-color: #52b788;
+        }
+        
+        .section-title {
+            color: #1e4a3b;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #52b788;
+            display: inline-block;
+        }
+        
+        .section-title i {
+            color: #52b788;
+            margin-left: 10px;
+        }
+        
+        .info-box {
+            background: #e8f5e9;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-right: 4px solid #52b788;
+        }
+        
+        .refund-card {
+            background: #f0f7f0;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-right: 4px solid #28a745;
+            transition: all 0.3s ease;
+        }
+        
+        .refund-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .declaration-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid #dee2e6;
+            margin-top: 1.5rem;
+        }
+        
+        .required-field::after {
+            content: "*";
+            color: #dc3545;
+            margin-right: 4px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-radius: 50px 50px 0 0;
+            border-top: 3px solid #52b788;
+        }
+        
+        .footer-links {
+            color: #e4f2e4;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links:hover {
+            color: #52b788;
+        }
+        
+        .contact-item {
+            margin-bottom: 10px;
+            color: #e4f2e4;
+        }
+        
+        .contact-item i {
+            color: #52b788;
+            margin-left: 10px;
+            width: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(82, 183, 136, 0.2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            color: #52b788;
+            transition: all 0.3s ease;
+            border: 1px solid #52b788;
+        }
+        
+        .social-icon:hover {
+            background: #52b788;
+            color: #0e3b2c;
+            transform: translateY(-3px);
+        }
+        
+        .nav-tabs-custom {
+            border-bottom: 3px solid #52b788;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #1e4a3b 0%, #2d6a4e 100%);
+            border-radius: 50px;
+            padding: 0.5rem;
+        }
+        
+        .nav-tabs-custom .nav-link {
+            color: white !important;
+            font-weight: 600;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs-custom .nav-link i {
+            color: white;
+        }
+        
+        .nav-tabs-custom .nav-link.active {
+            color: #1e4a3b !important;
+            background: #52b788;
+            border: 2px solid white;
+        }
+        
+        .preview-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid #52b788;
+            margin-bottom: 1.5rem;
+        }
+        
+        .preview-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px dashed #e4f2e4;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .preview-label {
+            font-weight: 600;
+            color: #1e4a3b;
+            width: 45%;
+        }
+        
+        .preview-value {
+            color: #2d6a4e;
+            width: 55%;
+            text-align: left;
+        }
+        
+        .status-approved {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .status-rejected {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .currency-badge {
+            background: #52b788;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .add-btn {
+            background: #52b788;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .add-btn:hover {
+            background: #2d6a4e;
+        }
+        
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+        
+        .remove-btn:hover {
+            background: #c82333;
+        }
+        
+        #pdf-export-container {
+            position: fixed;
+            top: -99999px;
+            left: -99999px;
+            width: 800px;
+            background: white;
+            z-index: 9999;
+            padding: 30px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .pdf-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            direction: rtl;
+        }
+        
+        .pdf-cover {
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .pdf-section-title {
+            color: #1e4a3b;
+            font-size: 20px;
+            font-weight: 800;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #52b788;
+        }
+        
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 11px;
+            border: 1px solid #52b788;
+        }
+        
+        .pdf-table th {
+            background: #1e4a3b;
+            color: white;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .pdf-table td {
+            padding: 6px;
+            border: 1px solid #e4f2e4;
+            text-align: center;
+        }
+        
+        .pdf-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #0e3b2c 0%, #1b5e3f 100%);
+            color: white;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="main-header text-center no-print">
+        <div class="container">
+            <span class="company-badge mb-3">
+                <i class="fas fa-file-invoice-dollar me-2"></i>تكاليف | حلول أعمال ذكية
+                <span class="uae-badge"><i class="fas fa-flag me-1"></i>الإمارات العربية المتحدة</span>
+            </span>
+            <h1 class="display-4 fw-bold mt-3" style="color: white;">
+                <i class="fas fa-money-bill-wave me-3"></i>
+                استبيان استرداد الضريبة
+            </h1>
+            <p class="lead" style="color: white;">خدمة الاستشارات الضريبية في الإمارات - جمع بيانات طلبات استرداد الضريبة المقدمة للهيئة الاتحادية للضرائب</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs-custom nav-fill" id="myTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="data-entry-tab" data-bs-toggle="tab" data-bs-target="#dataEntry" type="button" role="tab">
+                    <i class="fas fa-edit me-2"></i> استبيان المعلومات
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview" type="button" role="tab">
+                    <i class="fas fa-eye me-2"></i> معاينة التقرير
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Tab 1: Data Entry -->
+            <div class="tab-pane fade show active" id="dataEntry" role="tabpanel">
+                <!-- بيانات الشركة الأساسية -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-building"></i> بيانات الشركة الأساسية</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">اسم الشركة (بالعربية)</label>
+                            <input type="text" class="form-control" id="companyNameAr" placeholder="أدخل اسم الشركة بالعربية">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">اسم الشركة (بالإنجليزية)</label>
+                            <input type="text" class="form-control" id="companyNameEn" placeholder="Company Name in English">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label required-field">الرقم الضريبي (TRN)</label>
+                            <input type="text" class="form-control" id="taxRegistrationNumber" placeholder="مثال: 100000000000000">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">رقم السجل التجاري</label>
+                            <input type="text" class="form-control" id="commercialLicense" placeholder="رقم الرخصة التجارية">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">الإمارة</label>
+                            <select class="form-select" id="emirate">
+                                <option value="">اختر الإمارة</option>
+                                <option value="أبوظبي">أبوظبي</option>
+                                <option value="دبي">دبي</option>
+                                <option value="الشارقة">الشارقة</option>
+                                <option value="عجمان">عجمان</option>
+                                <option value="أم القيوين">أم القيوين</option>
+                                <option value="رأس الخيمة">رأس الخيمة</option>
+                                <option value="الفجيرة">الفجيرة</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">جهة الاتصال الرئيسية</label>
+                            <input type="text" class="form-control" id="contactPerson" placeholder="اسم المسؤول عن الضرائب">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" id="clientEmail" placeholder="email@company.com">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required-field">رقم الهاتف</label>
+                            <input type="tel" class="form-control" id="clientPhone" placeholder="+971 XX XXX XXXX">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">تاريخ التعبئة</label>
+                            <input type="date" class="form-control" id="submissionDate" value="2026-03-25">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- معلومات عامة عن استرداد الضريبة -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> معلومات عامة عن استرداد الضريبة</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">هل سبق للشركة تقديم طلبات استرداد ضريبة؟</label>
+                            <select class="form-select" id="hasPreviousRefunds" onchange="toggleRefundHistory()">
+                                <option value="لا">لا</option>
+                                <option value="نعم">نعم</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">إجمالي قيمة الاستردادات المستلمة</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="totalRefundsReceived" placeholder="0.00">
+                                <span class="input-group-text">درهم</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">إجمالي قيمة الاستردادات المطلوبة (قيد المعالجة)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="totalRefundsPending" placeholder="0.00">
+                                <span class="input-group-text">درهم</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">إجمالي قيمة الاستردادات المرفوضة</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="totalRefundsRejected" placeholder="0.00">
+                                <span class="input-group-text">درهم</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-box mt-2">
+                        <i class="fas fa-info-circle text-success me-2"></i>
+                        <strong>ملاحظة:</strong> استرداد الضريبة في الإمارات يشمل استرداد ضريبة القيمة المضافة للزوار، استرداد الفائض من ضريبة القيمة المضافة للمنشآت، واسترداد الضريبة للقطاعات المعفاة.
+                    </div>
+                </div>
+
+                <!-- قائمة طلبات استرداد الضريبة -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-list-alt"></i> قائمة طلبات استرداد الضريبة</h3>
+                    <div class="info-box mb-3">
+                        <i class="fas fa-info-circle text-success me-2"></i>
+                        <strong>ملاحظة:</strong> يرجى إدخال تفاصيل كل طلب استرداد ضريبة تم تقديمه.
+                    </div>
+                    <div id="refundsContainer"></div>
+                    <button type="button" class="btn btn-sm add-btn mt-2" onclick="addRefundRequest()">
+                        <i class="fas fa-plus me-1"></i> إضافة طلب استرداد ضريبة
+                    </button>
+                </div>
+
+                <!-- أسباب الرفض والتحديات -->
+                <div class="section-card" id="rejectionReasonsSection" style="display: none;">
+                    <h3 class="section-title"><i class="fas fa-times-circle"></i> أسباب الرفض والتحديات</h3>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">أسباب رفض طلبات الاسترداد</label>
+                            <textarea class="form-control" id="rejectionReasons" rows="2" placeholder="مثال: عدم اكتمال المستندات، عدم تطابق البيانات، تجاوز المهلة الزمنية..."></textarea>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">التحديات التي واجهت الشركة في تقديم طلبات الاسترداد</label>
+                            <textarea class="form-control" id="refundChallenges" rows="2" placeholder="مثال: صعوبة في توفير المستندات، عدم وضوح الإجراءات، تأخر الرد من الهيئة..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الإجراءات المتخذة لتحسين عملية الاسترداد -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-chart-line"></i> الإجراءات المتخذة لتحسين عملية الاسترداد</h3>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">الإجراءات التي تم اتخاذها لتسهيل عملية استرداد الضريبة</label>
+                            <textarea class="form-control" id="improvementActions" rows="2" placeholder="مثال: تحسين حفظ المستندات، تحديث نظام الفواتير، تدريب الموظفين..."></textarea>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">نظام تتبع طلبات الاسترداد</label>
+                            <textarea class="form-control" id="trackingSystem" rows="2" placeholder="كيف يتم تتبع طلبات الاسترداد؟ هل يوجد نظام داخلي للمتابعة؟"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- معلومات إضافية -->
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> معلومات إضافية</h3>
+                    <div class="mb-3">
+                        <label class="form-label">أي معلومات إضافية حول استرداد الضريبة</label>
+                        <textarea class="form-control" id="additionalInfo" rows="3" placeholder="أي معلومات إضافية مثل: ملاحظات على نظام الاسترداد، اقتراحات للتحسين، تواصل مع الهيئة..."></textarea>
+                    </div>
+                </div>
+
+                <!-- إقرار وتوقيع -->
+                <div class="declaration-box">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="declarationCheck">
+                                <label class="form-check-label" for="declarationCheck">
+                                    أقر بأن جميع البيانات المقدمة في هذا الاستبيان صحيحة وكاملة، وأتحمل مسؤولية دقتها. وأوافق على استخدامها لغرض تقديم الاستشارات الضريبية.
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">اسم المقر</label>
+                            <input type="text" class="form-control" id="declarantName" placeholder="الاسم الكامل">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">المنصب</label>
+                            <input type="text" class="form-control" id="declarantPosition" placeholder="المسمى الوظيفي">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">التاريخ</label>
+                            <input type="date" class="form-control" id="declarationDate" value="2026-03-25">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 mb-4">
+                    <button class="btn btn-custom btn-lg" onclick="refreshPreview()"><i class="fas fa-sync-alt me-2"></i> تحديث المعاينة</button>
+                    <button class="btn btn-custom btn-lg mx-2" onclick="resetForm()"><i class="fas fa-undo me-2"></i> إعادة تعيين</button>
+                </div>
+            </div>
+
+            <!-- Tab 2: Preview -->
+            <div class="tab-pane fade" id="preview" role="tabpanel">
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-file-alt me-2"></i> معاينة تقرير استرداد الضريبة</div>
+                    <div class="card-body" id="previewContent"></div>
+                </div>
+                <div class="text-center mb-4 no-print">
+                    <button class="btn btn-excel btn-lg mx-2" onclick="exportToExcel()"><i class="fas fa-file-excel me-2"></i> تصدير (Excel)</button>
+                    <button class="btn btn-pdf btn-lg mx-2" onclick="exportToPDF(event)"><i class="fas fa-file-pdf me-2"></i> تصدير التقرير (PDF)</button>
+                    <button class="btn btn-custom btn-lg mx-2" onclick="window.print()"><i class="fas fa-print me-2"></i> طباعة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer no-print">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: #52b788;">تكاليف - حلول أعمال ذكية</h5>
+                    <p style="color: #e4f2e4;">نقدم خدمات الاستشارات الضريبية في الإمارات العربية المتحدة.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: #52b788;"><i class="fas fa-address-card me-2"></i>معلومات الاتصال</h5>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i> دبي - الإمارات العربية المتحدة</div>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i><a href="tel:+97145678901" class="footer-links">+971 4 567 8901</a></div>
+                    <div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:tax@takalief.com" class="footer-links">tax@takalief.com</a></div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 style="color: #52b788;"><i class="fas fa-share-alt me-2"></i>تابعنا على</h5>
+                    <div class="text-center">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <p class="mb-0" style="color: #e4f2e4;"><i class="fas fa-copyright me-2" style="color: #52b788;"></i>2026 تكاليف - جميع الحقوق محفوظة</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="pdf-export-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let refundCounter = 0;
+        
+        function toggleRefundHistory() {
+            var hasPreviousRefunds = document.getElementById('hasPreviousRefunds').value;
+            var rejectionSection = document.getElementById('rejectionReasonsSection');
+            
+            if (hasPreviousRefunds === 'نعم') {
+                rejectionSection.style.display = 'block';
+            } else {
+                rejectionSection.style.display = 'none';
+            }
+            refreshPreview();
+        }
+        
+        function addRefundRequest() {
+            refundCounter++;
+            var container = document.getElementById('refundsContainer');
+            var newRefund = document.createElement('div');
+            newRefund.className = 'refund-card';
+            newRefund.id = 'refund_' + refundCounter;
+            newRefund.innerHTML = `
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label">رقم الطلب</label>
+                        <input type="text" class="form-control" placeholder="رقم الطلب" id="refund_number_${refundCounter}">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label class="form-label">نوع الضريبة</label>
+                        <select class="form-select" id="refund_taxType_${refundCounter}">
+                            <option value="ضريبة القيمة المضافة">ضريبة القيمة المضافة</option>
+                            <option value="ضريبة الشركات">ضريبة الشركات</option>
+                            <option value="ضريبة الاستقطاع">ضريبة الاستقطاع</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label class="form-label">تاريخ التقديم</label>
+                        <input type="date" class="form-control" id="refund_submitDate_${refundCounter}">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label class="form-label">قيمة الطلب</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="0.00" id="refund_amount_${refundCounter}">
+                            <span class="input-group-text">درهم</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label">حالة الطلب</label>
+                        <select class="form-select" id="refund_status_${refundCounter}" onchange="toggleRefundStatusDetails(${refundCounter})">
+                            <option value="قيد المعالجة">قيد المعالجة</option>
+                            <option value="تم الموافقة">تم الموافقة</option>
+                            <option value="تم الرفض">تم الرفض</option>
+                            <option value="تم الصرف">تم الصرف</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-2" id="refund_approvalDateDiv_${refundCounter}" style="display: none;">
+                        <label class="form-label">تاريخ الموافقة/الصرف</label>
+                        <input type="date" class="form-control" id="refund_approvalDate_${refundCounter}">
+                    </div>
+                    <div class="col-md-3 mb-2" id="refund_receivedAmountDiv_${refundCounter}" style="display: none;">
+                        <label class="form-label">المبلغ المستلم</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="0.00" id="refund_receivedAmount_${refundCounter}">
+                            <span class="input-group-text">درهم</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2" id="refund_rejectionReasonDiv_${refundCounter}" style="display: none;">
+                        <label class="form-label">سبب الرفض</label>
+                        <textarea class="form-control" rows="1" id="refund_rejectionReason_${refundCounter}" placeholder="سبب رفض الطلب"></textarea>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label class="form-label">ملاحظات إضافية</label>
+                        <textarea class="form-control" rows="1" id="refund_notes_${refundCounter}" placeholder="أي ملاحظات إضافية حول الطلب"></textarea>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <button type="button" class="btn btn-sm remove-btn" onclick="removeRefundRequest(${refundCounter})">
+                            <i class="fas fa-trash me-1"></i> حذف الطلب
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newRefund);
+            refreshPreview();
+        }
+        
+        function toggleRefundStatusDetails(id) {
+            var status = document.getElementById('refund_status_' + id).value;
+            var approvalDateDiv = document.getElementById('refund_approvalDateDiv_' + id);
+            var receivedAmountDiv = document.getElementById('refund_receivedAmountDiv_' + id);
+            var rejectionReasonDiv = document.getElementById('refund_rejectionReasonDiv_' + id);
+            
+            if (status === 'تم الموافقة' || status === 'تم الصرف') {
+                approvalDateDiv.style.display = 'block';
+                receivedAmountDiv.style.display = 'block';
+                rejectionReasonDiv.style.display = 'none';
+            } else if (status === 'تم الرفض') {
+                approvalDateDiv.style.display = 'none';
+                receivedAmountDiv.style.display = 'none';
+                rejectionReasonDiv.style.display = 'block';
+            } else {
+                approvalDateDiv.style.display = 'none';
+                receivedAmountDiv.style.display = 'none';
+                rejectionReasonDiv.style.display = 'none';
+            }
+        }
+        
+        function removeRefundRequest(id) {
+            var element = document.getElementById('refund_' + id);
+            if (element) {
+                element.remove();
+                refreshPreview();
+            }
+        }
+        
+        function getFieldValue(id, defaultValue) {
+            if (defaultValue === undefined) defaultValue = '—';
+            var element = document.getElementById(id);
+            return element && element.value.trim() !== '' ? element.value.trim() : defaultValue;
+        }
+        
+        function getRefundsData() {
+            var refunds = [];
+            for (var i = 1; i <= refundCounter; i++) {
+                var element = document.getElementById('refund_' + i);
+                if (element) {
+                    refunds.push({
+                        number: getFieldValue('refund_number_' + i),
+                        taxType: getFieldValue('refund_taxType_' + i),
+                        submitDate: getFieldValue('refund_submitDate_' + i),
+                        amount: getFieldValue('refund_amount_' + i),
+                        status: getFieldValue('refund_status_' + i),
+                        approvalDate: getFieldValue('refund_approvalDate_' + i),
+                        receivedAmount: getFieldValue('refund_receivedAmount_' + i),
+                        rejectionReason: getFieldValue('refund_rejectionReason_' + i),
+                        notes: getFieldValue('refund_notes_' + i)
+                    });
+                }
+            }
+            return refunds;
+        }
+        
+        function refreshPreview() {
+            var refunds = getRefundsData();
+            var hasPreviousRefunds = document.getElementById('hasPreviousRefunds').value;
+            
+            var refundsHtml = '';
+            if (refunds.length === 0) {
+                refundsHtml = '<div class="text-muted text-center py-3">لا توجد طلبات استرداد ضريبة مسجلة</div>';
+            } else {
+                for (var i = 0; i < refunds.length; i++) {
+                    var r = refunds[i];
+                    var statusClass = '';
+                    if (r.status === 'تم الموافقة' || r.status === 'تم الصرف') statusClass = 'status-approved';
+                    else if (r.status === 'قيد المعالجة') statusClass = 'status-pending';
+                    else if (r.status === 'تم الرفض') statusClass = 'status-rejected';
+                    
+                    refundsHtml += `
+                        <div class="refund-card mb-2">
+                            <div class="preview-item"><span class="preview-label"><strong>رقم الطلب</strong></span><span class="preview-value">${r.number}</span></div>
+                            <div class="preview-item"><span class="preview-label">نوع الضريبة</span><span class="preview-value">${r.taxType}</span></div>
+                            <div class="preview-item"><span class="preview-label">تاريخ التقديم</span><span class="preview-value">${r.submitDate}</span></div>
+                            <div class="preview-item"><span class="preview-label">قيمة الطلب</span><span class="preview-value">${r.amount} درهم</span></div>
+                            <div class="preview-item"><span class="preview-label">الحالة</span><span class="preview-value"><span class="${statusClass}">${r.status}</span></span></div>
+                            ${r.approvalDate && r.approvalDate !== '—' ? `<div class="preview-item"><span class="preview-label">تاريخ الموافقة/الصرف</span><span class="preview-value">${r.approvalDate}</span></div>` : ''}
+                            ${r.receivedAmount && r.receivedAmount !== '—' ? `<div class="preview-item"><span class="preview-label">المبلغ المستلم</span><span class="preview-value">${r.receivedAmount} درهم</span></div>` : ''}
+                            ${r.rejectionReason && r.rejectionReason !== '—' ? `<div class="preview-item"><span class="preview-label">سبب الرفض</span><span class="preview-value">${r.rejectionReason}</span></div>` : ''}
+                            ${r.notes && r.notes !== '—' ? `<div class="preview-item"><span class="preview-label">ملاحظات</span><span class="preview-value">${r.notes}</span></div>` : ''}
+                        </div>
+                    `;
+                }
+            }
+            
+            var previewHtml = `
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-building me-2"></i>بيانات الشركة الأساسية</h4>
+                    <div class="preview-item"><span class="preview-label">اسم الشركة (عربي)</span><span class="preview-value">${getFieldValue('companyNameAr')}</span></div>
+                    <div class="preview-item"><span class="preview-label">اسم الشركة (إنجليزي)</span><span class="preview-value">${getFieldValue('companyNameEn')}</span></div>
+                    <div class="preview-item"><span class="preview-label">الرقم الضريبي (TRN)</span><span class="preview-value">${getFieldValue('taxRegistrationNumber')}</span></div>
+                    <div class="preview-item"><span class="preview-label">رقم السجل التجاري</span><span class="preview-value">${getFieldValue('commercialLicense')}</span></div>
+                    <div class="preview-item"><span class="preview-label">الإمارة</span><span class="preview-value">${getFieldValue('emirate')}</span></div>
+                    <div class="preview-item"><span class="preview-label">جهة الاتصال</span><span class="preview-value">${getFieldValue('contactPerson')}</span></div>
+                    <div class="preview-item"><span class="preview-label">البريد الإلكتروني</span><span class="preview-value">${getFieldValue('clientEmail')}</span></div>
+                    <div class="preview-item"><span class="preview-label">رقم الهاتف</span><span class="preview-value">${getFieldValue('clientPhone')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-info-circle me-2"></i>معلومات عامة عن استرداد الضريبة</h4>
+                    <div class="preview-item"><span class="preview-label">سبق تقديم طلبات استرداد</span><span class="preview-value">${getFieldValue('hasPreviousRefunds')}</span></div>
+                    <div class="preview-item"><span class="preview-label">إجمالي قيمة الاستردادات المستلمة</span><span class="preview-value">${getFieldValue('totalRefundsReceived', '0')} درهم</span></div>
+                    <div class="preview-item"><span class="preview-label">إجمالي قيمة الاستردادات المطلوبة (قيد المعالجة)</span><span class="preview-value">${getFieldValue('totalRefundsPending', '0')} درهم</span></div>
+                    <div class="preview-item"><span class="preview-label">إجمالي قيمة الاستردادات المرفوضة</span><span class="preview-value">${getFieldValue('totalRefundsRejected', '0')} درهم</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-list-alt me-2"></i>قائمة طلبات استرداد الضريبة</h4>
+                    ${refundsHtml}
+                </div>
+                
+                ${hasPreviousRefunds === 'نعم' ? `
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-times-circle me-2"></i>أسباب الرفض والتحديات</h4>
+                    <div class="preview-item"><span class="preview-label">أسباب الرفض</span><span class="preview-value">${getFieldValue('rejectionReasons')}</span></div>
+                    <div class="preview-item"><span class="preview-label">التحديات التي واجهت الشركة</span><span class="preview-value">${getFieldValue('refundChallenges')}</span></div>
+                </div>
+                ` : ''}
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-chart-line me-2"></i>الإجراءات المتخذة لتحسين عملية الاسترداد</h4>
+                    <div class="preview-item"><span class="preview-label">الإجراءات المتخذة</span><span class="preview-value">${getFieldValue('improvementActions')}</span></div>
+                    <div class="preview-item"><span class="preview-label">نظام تتبع طلبات الاسترداد</span><span class="preview-value">${getFieldValue('trackingSystem')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-info-circle me-2"></i>معلومات إضافية</h4>
+                    <div class="preview-item"><span class="preview-label">ملاحظات إضافية</span><span class="preview-value">${getFieldValue('additionalInfo')}</span></div>
+                </div>
+                
+                <div class="preview-card">
+                    <h4 style="color: #1e4a3b;"><i class="fas fa-signature me-2"></i>الإقرار والتوقيع</h4>
+                    <div class="preview-item"><span class="preview-label">اسم المقر</span><span class="preview-value">${getFieldValue('declarantName')}</span></div>
+                    <div class="preview-item"><span class="preview-label">المنصب</span><span class="preview-value">${getFieldValue('declarantPosition')}</span></div>
+                    <div class="preview-item"><span class="preview-label">التاريخ</span><span class="preview-value">${getFieldValue('declarationDate')}</span></div>
+                    <div class="preview-item"><span class="preview-label">حالة الإقرار</span><span class="preview-value">${document.getElementById('declarationCheck').checked ? 'تم الإقرار' : 'لم يتم الإقرار'}</span></div>
+                </div>
+                
+                <div class="preview-card text-center">
+                    <hr>
+                    <p style="color: #1e4a3b; font-weight: 600;"><i class="fas fa-check-circle me-2"></i>تم تعبئة استبيان استرداد الضريبة بنجاح</p>
+                    <p class="text-muted small">تاريخ الإصدار: ${new Date().toLocaleDateString('ar-EG')}</p>
+                </div>
+            `;
+            document.getElementById('previewContent').innerHTML = previewHtml;
+        }
+        
+        function resetForm() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟')) {
+                location.reload();
+            }
+        }
+        
+        function exportToExcel() {
+            var companyName = getFieldValue('companyNameAr', 'شركة');
+            var refunds = getRefundsData();
+            var hasPreviousRefunds = document.getElementById('hasPreviousRefunds').value;
+            
+            var excelData = [
+                ['استبيان استرداد الضريبة - تكاليف (الإمارات)'],
+                ['تاريخ التقرير', new Date().toLocaleDateString('ar-EG')],
+                ['اسم الشركة', companyName],
+                ['الرقم الضريبي (TRN)', getFieldValue('taxRegistrationNumber')],
+                [],
+                ['1. بيانات الشركة الأساسية'],
+                ['اسم الشركة (عربي)', getFieldValue('companyNameAr')],
+                ['اسم الشركة (إنجليزي)', getFieldValue('companyNameEn')],
+                ['الرقم الضريبي (TRN)', getFieldValue('taxRegistrationNumber')],
+                ['رقم السجل التجاري', getFieldValue('commercialLicense')],
+                ['الإمارة', getFieldValue('emirate')],
+                ['جهة الاتصال', getFieldValue('contactPerson')],
+                ['البريد الإلكتروني', getFieldValue('clientEmail')],
+                ['رقم الهاتف', getFieldValue('clientPhone')],
+                [],
+                ['2. معلومات عامة عن استرداد الضريبة'],
+                ['سبق تقديم طلبات استرداد', getFieldValue('hasPreviousRefunds')],
+                ['إجمالي قيمة الاستردادات المستلمة', getFieldValue('totalRefundsReceived', '0') + ' درهم'],
+                ['إجمالي قيمة الاستردادات المطلوبة (قيد المعالجة)', getFieldValue('totalRefundsPending', '0') + ' درهم'],
+                ['إجمالي قيمة الاستردادات المرفوضة', getFieldValue('totalRefundsRejected', '0') + ' درهم'],
+                [],
+                ['3. قائمة طلبات استرداد الضريبة'],
+                ['رقم الطلب', 'نوع الضريبة', 'تاريخ التقديم', 'قيمة الطلب', 'الحالة', 'تاريخ الموافقة', 'المبلغ المستلم', 'سبب الرفض', 'ملاحظات']
+            ];
+            
+            for (var i = 0; i < refunds.length; i++) {
+                var r = refunds[i];
+                excelData.push([r.number, r.taxType, r.submitDate, r.amount + ' درهم', r.status, r.approvalDate, r.receivedAmount + ' درهم', r.rejectionReason, r.notes]);
+            }
+            
+            if (hasPreviousRefunds === 'نعم') {
+                excelData.push([], ['4. أسباب الرفض والتحديات']);
+                excelData.push(['أسباب الرفض', getFieldValue('rejectionReasons')]);
+                excelData.push(['التحديات التي واجهت الشركة', getFieldValue('refundChallenges')]);
+            }
+            
+            excelData.push([], ['5. الإجراءات المتخذة لتحسين عملية الاسترداد']);
+            excelData.push(['الإجراءات المتخذة', getFieldValue('improvementActions')]);
+            excelData.push(['نظام تتبع طلبات الاسترداد', getFieldValue('trackingSystem')]);
+            
+            excelData.push([], ['6. معلومات إضافية']);
+            excelData.push(['ملاحظات إضافية', getFieldValue('additionalInfo')]);
+            
+            excelData.push([], ['7. الإقرار والتوقيع']);
+            excelData.push(['اسم المقر', getFieldValue('declarantName')]);
+            excelData.push(['المنصب', getFieldValue('declarantPosition')]);
+            excelData.push(['التاريخ', getFieldValue('declarationDate')]);
+            excelData.push(['حالة الإقرار', document.getElementById('declarationCheck').checked ? 'تم الإقرار' : 'لم يتم الإقرار']);
+            excelData.push([], ['للتواصل: tax@takalief.com | +971 4 567 8901'], ['www.takalief.com']);
+            
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet(excelData);
+            XLSX.utils.book_append_sheet(wb, ws, 'استرداد الضريبة');
+            XLSX.writeFile(wb, 'Tax_Refund_' + companyName.replace(/\s/g, '_') + '_' + new Date().toISOString().slice(0,10) + '.xlsx');
+            alert('تم تصدير استبيان Excel بنجاح!');
+        }
+        
+        async function exportToPDF(event) {
+            try {
+                var exportBtn = event.target;
+                var originalText = exportBtn.innerHTML;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري إعداد التقرير...';
+                exportBtn.disabled = true;
+                
+                var pdfContainer = document.getElementById('pdf-export-container');
+                pdfContainer.innerHTML = '';
+                pdfContainer.style.opacity = '1';
+                pdfContainer.style.position = 'absolute';
+                pdfContainer.style.top = '0';
+                pdfContainer.style.left = '0';
+                pdfContainer.style.zIndex = '9999';
+                
+                var companyName = getFieldValue('companyNameAr', 'غير محدد');
+                var clientName = getFieldValue('contactPerson', 'غير محدد');
+                var currentDate = new Date().toLocaleDateString('ar-EG');
+                var refunds = getRefundsData();
+                var hasPreviousRefunds = document.getElementById('hasPreviousRefunds').value;
+                
+                var refundsRows = '';
+                for (var i = 0; i < refunds.length; i++) {
+                    var r = refunds[i];
+                    refundsRows += `<tr><td>${r.number}</td><td>${r.taxType}</td><td>${r.submitDate}</td><td>${r.amount} درهم</td><td>${r.status}</td><td>${r.approvalDate}</td><td>${r.receivedAmount} درهم</td><td>${r.rejectionReason}</td><td>${r.notes}</td></tr>`;
+                }
+                
+                var fullHtml = `
+                    <div class="pdf-cover">
+                        <h1>استبيان استرداد الضريبة</h1>
+                        <h3>Tax Refund Questionnaire - UAE</h3>
+                        <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-top: 30px;">
+                            <p><i class="fas fa-building me-2"></i>الشركة: ${companyName}</p>
+                            <p><i class="fas fa-id-card me-2"></i>الرقم الضريبي: ${getFieldValue('taxRegistrationNumber')}</p>
+                            <p><i class="fas fa-user me-2"></i>جهة الاتصال: ${clientName}</p>
+                            <p><i class="fas fa-calendar me-2"></i>تاريخ التقرير: ${currentDate}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="pdf-section-title">1. بيانات الشركة الأساسية</h2>
+                        <table class="pdf-table"><thead><tr><th>البيان</th><th>القيمة</th></tr></thead>
+                            <tbody>
+                                <tr><td>اسم الشركة (عربي)</td><td>${getFieldValue('companyNameAr')}</td></tr>
+                                <tr><td>اسم الشركة (إنجليزي)</td><td>${getFieldValue('companyNameEn')}</td></tr>
+                                <tr><td>الرقم الضريبي (TRN)</td><td>${getFieldValue('taxRegistrationNumber')}</td></tr>
+                                <tr><td>رقم السجل التجاري</td><td>${getFieldValue('commercialLicense')}</td></tr>
+                                <tr><td>الإمارة</td><td>${getFieldValue('emirate')}</td></tr>
+                                <tr><td>جهة الاتصال</td><td>${getFieldValue('contactPerson')}</td></tr>
+                                <tr><td>البريد الإلكتروني</td><td>${getFieldValue('clientEmail')}</td></tr>
+                                <tr><td>رقم الهاتف</td><td>${getFieldValue('clientPhone')}</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">2. معلومات عامة عن استرداد الضريبة</h2>
+                        <table class="pdf-table"><thead><tr><th>البيان</th><th>القيمة</th></tr></thead>
+                            <tbody>
+                                <tr><td>سبق تقديم طلبات استرداد</td><td>${getFieldValue('hasPreviousRefunds')}</td></tr>
+                                <tr><td>إجمالي قيمة الاستردادات المستلمة</td><td>${getFieldValue('totalRefundsReceived', '0')} درهم</td></tr>
+                                <tr><td>إجمالي قيمة الاستردادات المطلوبة (قيد المعالجة)</td><td>${getFieldValue('totalRefundsPending', '0')} درهم</td></tr>
+                                <tr><td>إجمالي قيمة الاستردادات المرفوضة</td><td>${getFieldValue('totalRefundsRejected', '0')} درهم</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">3. قائمة طلبات استرداد الضريبة</h2>
+                        <table class="pdf-table"><thead><tr><th>رقم الطلب</th><th>نوع الضريبة</th><th>تاريخ التقديم</th><th>قيمة الطلب</th><th>الحالة</th><th>تاريخ الموافقة</th><th>المبلغ المستلم</th><th>سبب الرفض</th><th>ملاحظات</th></tr></thead>
+                            <tbody>${refundsRows || '<tr><td colspan="9" class="text-center">لا توجد طلبات استرداد مسجلة</td></tr>'}</tbody>
+                        </table>
+                        
+                        ${hasPreviousRefunds === 'نعم' ? `
+                        <h2 class="pdf-section-title">4. أسباب الرفض والتحديات</h2>
+                        <table class="pdf-table"><thead><tr><th>البيان</th><th>القيمة</th></tr></thead>
+                            <tbody>
+                                <tr><td>أسباب الرفض</td><td>${getFieldValue('rejectionReasons')}</td></tr>
+                                <tr><td>التحديات التي واجهت الشركة</td><td>${getFieldValue('refundChallenges')}</td></tr>
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        
+                        <h2 class="pdf-section-title">5. الإجراءات المتخذة لتحسين عملية الاسترداد</h2>
+                        <table class="pdf-table"><thead><tr><th>البيان</th><th>القيمة</th></tr></thead>
+                            <tbody>
+                                <tr><td>الإجراءات المتخذة</td><td>${getFieldValue('improvementActions')}</td></tr>
+                                <tr><td>نظام تتبع طلبات الاسترداد</td><td>${getFieldValue('trackingSystem')}</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">6. معلومات إضافية</h2>
+                        <table class="pdf-table"><thead><tr><th>البيان</th><th>القيمة</th></tr></thead>
+                            <tbody>
+                                <tr><td>ملاحظات إضافية</td><td>${getFieldValue('additionalInfo')}</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <h2 class="pdf-section-title">7. الإقرار والتوقيع</h2>
+                        <table class="pdf-table"><thead><tr><th>البيان</th><th>القيمة</th></tr></thead>
+                            <tbody>
+                                <tr><td>اسم المقر</td><td>${getFieldValue('declarantName')}</td></tr>
+                                <tr><td>المنصب</td><td>${getFieldValue('declarantPosition')}</td></tr>
+                                <tr><td>التاريخ</td><td>${getFieldValue('declarationDate')}</td></tr>
+                                <tr><td>حالة الإقرار</td><td>${document.getElementById('declarationCheck').checked ? 'تم الإقرار' : 'لم يتم الإقرار'}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="page-break-before: always; margin-top: 40px;">
+                        <div class="pdf-footer">
+                            <div style="font-size: 20px; font-weight: 700; color: #52b788;">تكاليف - حلول أعمال ذكية</div>
+                            <div>دبي - الإمارات العربية المتحدة | +971 4 567 8901 | tax@takalief.com</div>
+                            <hr style="width: 150px; margin: 15px auto;">
+                            <p>تم تعبئة هذا الاستبيان لتقييم استرداد الضريبة للشركة</p>
+                            <p>تاريخ الإصدار: ${currentDate}</p>
+                            <p style="margin-top: 20px;">توقيع العميل: _________________________</p>
+                            <p>جميع الحقوق محفوظة © 2026</p>
+                        </div>
+                    </div>
+                `;
+                
+                var pdfWrapper = document.createElement('div');
+                pdfWrapper.className = 'pdf-wrapper';
+                pdfWrapper.innerHTML = fullHtml;
+                pdfContainer.appendChild(pdfWrapper);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                var canvas = await html2canvas(pdfContainer, { scale: 2, backgroundColor: '#ffffff', logging: false });
+                var imgData = canvas.toDataURL('image/png');
+                var imgWidth = 210;
+                var pageHeight = 297;
+                var imgHeight = (canvas.height * imgWidth) / canvas.width;
+                var heightLeft = imgHeight;
+                var position = 0;
+                
+                var pdf = new jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+                heightLeft -= pageHeight;
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+                    heightLeft -= pageHeight;
+                }
+                
+                pdf.save('Tax_Refund_' + companyName.replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '_') + '_' + new Date().toISOString().slice(0,10) + '.pdf');
+                
+                pdfContainer.innerHTML = '';
+                pdfContainer.style.opacity = '0';
+                pdfContainer.style.position = 'fixed';
+                pdfContainer.style.top = '-99999px';
+                
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+                alert('تم تصدير استبيان PDF بنجاح!');
+            } catch (error) {
+                alert('حدث خطأ: ' + error.message);
+                var exportBtn = event.target;
+                exportBtn.innerHTML = '<i class="fas fa-file-pdf me-2"></i> تصدير التقرير (PDF)';
+                exportBtn.disabled = false;
+            }
+        }
+        
+        window.onload = function() {
+            toggleRefundHistory();
+            refreshPreview();
+        };
+    </script>
+</body>
+</html>
